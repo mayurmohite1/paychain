@@ -1,4 +1,5 @@
-import brainwave from "./brainwave.svg";
+//import brainwave from "./brainwave.svg";
+import paychain from "../assets/PayChain.png";
 import check from "./check.svg";
 import brainwaveSymbol from "./brainwave-symbol.svg";
 import brainwaveWhiteSymbol from "./brainwave-symbol-white.svg";
@@ -18,7 +19,7 @@ import recording01 from "./recording-01.svg";
 import disc02 from "./disc-02.svg";
 import chromecast from "./chrome-cast.svg";
 import sliders04 from "./sliders-04.svg";
-import loading from "./loading.png";
+
 import background from "./background.jpg";
 
 import curve from "./hero/curve.png";
@@ -52,7 +53,6 @@ import roadmap3 from "./roadmap/image-3.png";
 import roadmap4 from "./roadmap/image-4.png";
 import undone from "./roadmap/undone.svg";
 
-import notification1 from "./notification/image-1.png";
 import notification2 from "./notification/image-2.png";
 import notification3 from "./notification/image-3.png";
 import notification4 from "./notification/image-4.png";
@@ -76,7 +76,7 @@ import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
 
 export {
-  brainwave,
+  paychain,
   check,
   check2,
   loading1,
@@ -96,7 +96,6 @@ export {
   disc02,
   chromecast,
   sliders04,
-  loading,
   background,
   curve,
   robot,
@@ -124,7 +123,6 @@ export {
   roadmap3,
   roadmap4,
   undone,
-  notification1,
   notification2,
   notification3,
   notification4,
