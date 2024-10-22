@@ -9,14 +9,13 @@ import {
   VideoChatMessage,
 } from "./design/Services";
 
-
 const Services = () => {
   return (
     <Section id="how-to-use">
       <div className="container">
         <Heading
-          title="Generative AI made for creators."
-          text="Brainwave unlocks the potential of AI-powered applications"
+          title="PayChain gives you Security"
+          text="PayChain unlocks the potential of Decentralized applications"
         />
 
         <div className="relative">
@@ -32,9 +31,9 @@ const Services = () => {
             </div>
 
             <div className="relative z-1 max-w-[17rem] ml-auto">
-              <h4 className="h4 mb-4">Smartest AI</h4>
+              <h4 className="h4 mb-4">PayChain is Trust</h4>
               <p className="body-2 mb-[3rem] text-n-3">
-                Brainwave unlocks the potential of AI-powered applications
+                PayChain unlocks the potential of Decentralized applications
               </p>
               <ul className="body-2">
                 {brainwaveServices.map((item, index) => (
@@ -48,7 +47,6 @@ const Services = () => {
                 ))}
               </ul>
             </div>
-
           </div>
 
           <div className="relative z-1 grid gap-5 lg:grid-cols-2">
@@ -64,10 +62,9 @@ const Services = () => {
               </div>
 
               <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-b from-n-8/0 to-n-8/90 lg:p-15">
-                <h4 className="h4 mb-4">Photo editing</h4>
+                <h4 className="h4 mb-4">Transaction</h4>
                 <p className="body-2 mb-[3rem] text-n-3">
-                  Automatically enhance your photos using our AI app&apos;s
-                  photo editing feature. Try it now!
+                Transaction is done on the Decentralized platform with full security using Blockchain Technology
                 </p>
               </div>
 
@@ -76,10 +73,9 @@ const Services = () => {
 
             <div className="p-4 bg-n-7 rounded-3xl overflow-hidden lg:min-h-[46rem]">
               <div className="py-12 px-4 xl:px-8">
-                <h4 className="h4 mb-4">Video generation</h4>
+                <h4 className="h4 mb-4">Revolutionary Transactions</h4>
                 <p className="body-2 mb-[2rem] text-n-3">
-                  The world’s most powerful AI photo and video art generation
-                  engine. What will you create?
+                  The world’s most secure accounting management system.
                 </p>
 
                 <ul className="flex items-center justify-between">

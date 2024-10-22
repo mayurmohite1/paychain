@@ -4,7 +4,6 @@ import Section from "./Section";
 import { BackgroundCircles, BottomLine, Gradient } from "./design/Hero";
 
 import { useRef } from "react";
-import CompanyLogos from "./CompanyLogos";
 
 const Hero = () => {
   const parallaxRef = useRef(null);
@@ -54,8 +53,6 @@ const Hero = () => {
                   height={490}
                   alt="AI"
                 />
-
-                
               </div>
             </div>
 
@@ -72,7 +69,6 @@ const Hero = () => {
           </div>
           <BackgroundCircles />
         </div>
-        <CompanyLogos className="hidden relative z-10 mt-20 lg:block" />
       </div>
       <BottomLine />
     </Section>
