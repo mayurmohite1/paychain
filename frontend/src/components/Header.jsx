@@ -1,7 +1,5 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-
-//import { brainwave } from "../assets";
 import { paychain } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";
@@ -32,13 +30,13 @@ const Header = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-full z-50  border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
+      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
         openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
       }`}
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <a className="block w-[12rem] xl:mr-8" href="#hero">
-          <img src={paychain} width={200} height={40} alt="Brainwave" />
+          <img src={paychain} width={200} height={40} alt="Paychain" />
         </a>
 
         <nav
@@ -48,9 +46,9 @@ const Header = () => {
         >
           <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.id}
-                href={item.url}
+                to={item.url}
                 onClick={handleClick}
                 className={`block relative font-code text-2xl uppercase text-n-1 transition-colors hover:text-color-1 ${
                   item.onlyMobile ? "lg:hidden" : ""
@@ -61,22 +59,27 @@ const Header = () => {
                 } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
               >
                 {item.title}
-              </a>
+              </Link>
             ))}
           </div>
 
           <HamburgerMenu />
         </nav>
 
-        <a
-          href="#signup"
+        {/* Use Link component for New Account */}
+        <Link
+          to="/register"  // Navigate to registration form
           className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
         >
           New account
-        </a>
-        <Button className="hidden lg:flex" href="#login">
-          Sign in
-        </Button>
+        </Link>
+        
+        {/* Use Link component for Sign In */}
+        <Link to="/login">
+          <Button className="hidden lg:flex">
+            Sign in
+          </Button>
+        </Link>
 
         <Button
           className="ml-auto lg:hidden"
@@ -91,3 +94,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
