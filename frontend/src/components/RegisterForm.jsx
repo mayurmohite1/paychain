@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const RegisterForm = () => {
+  const RegisterForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,7 +73,7 @@ const RegisterForm = () => {
 
         <div className="mt-4 text-center text-black">
           {message && <p className={`text-${message.includes('successful') ? 'green' : 'red'}-500`}>{message}</p>}
-          <p>Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a></p>
+          <p>Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link></p>
         </div>
       </div>
     </div>

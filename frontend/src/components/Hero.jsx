@@ -2,6 +2,7 @@ import { curve, heroBackground, robot } from "../assets";
 import Button from "./Button";
 import Section from "./Section";
 import { BackgroundCircles, BottomLine, Gradient } from "./design/Hero";
+import { Link } from "react-router-dom";
 
 import { useRef } from "react";
 
@@ -36,9 +37,11 @@ const Hero = () => {
             Unleash the power of Blockchain Technology with PayChain. Make your
             transactions secure with PayChain.
           </p>
-          <Button href="/pricing" white>
-            Get started
-          </Button>
+          <Link to="/get-started">
+            <Button  white>
+              Get started
+            </Button>
+          </Link>
         </div>
         <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">
           <div className="relative z-1 p-0.5 rounded-2xl bg-conic-gradient">

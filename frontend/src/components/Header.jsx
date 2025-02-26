@@ -5,9 +5,25 @@ import { navigation } from "../constants";
 import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";
 import { HamburgerMenu } from "./design/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode"; 
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 
 const Header = () => {
+
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  // console.log("User in Header:", user); // ✅ Debugging to check user object
+
+  
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   const pathname = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
@@ -24,18 +40,18 @@ const Header = () => {
   const handleClick = () => {
     if (!openNavigation) return;
 
-    enablePageScroll();
-    setOpenNavigation(false);
+     enablePageScroll();
+     setOpenNavigation(false);
   };
 
+  
+
+ 
+
   return (
-    <div
-      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
-        openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm"
-      }`}
-    >
+    <div className="fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm">
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a className="block w-[12rem] xl:mr-8" href="#hero">
+      <a className="block w-[12rem] xl:mr-8" href="/">
           <img src={paychain} width={200} height={40} alt="Paychain" />
         </a>
 
@@ -66,31 +82,27 @@ const Header = () => {
           <HamburgerMenu />
         </nav>
 
-        {/* Use Link component for New Account */}
-        <Link
-          to="/register"  // Navigate to registration form
-          className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
-        >
-          New account
-        </Link>
-        
-        {/* Use Link component for Sign In */}
-        <Link to="/login">
-          <Button className="hidden lg:flex">
-            Sign in
-          </Button>
-        </Link>
-
-        <Button
-          className="ml-auto lg:hidden"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
-          <MenuSvg openNavigation={openNavigation} />
-        </Button>
+        {/* If logged in, show Username & Logout */}
+        {user ? (
+          <div className="flex items-center space-x-4">
+            <span className="text-white">{user.role} <br />({user.username })</span>
+            <Button onClick={handleLogout} className="lg:flex">Logout</Button>
+          </div>
+        ) : (
+          <>
+            {/* ✅ Show Register & Login for guests */}
+            <Link to="/register" className="hidden mr-8 text-n-1/50 hover:text-n-1 lg:block">
+              New account
+            </Link>
+            <Link to="/login">
+              <Button className="hidden lg:flex">Sign in</Button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );
+
 };
 
 export default Header;
