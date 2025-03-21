@@ -9,7 +9,9 @@ import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import { useEffect } from "react";
-import GetStarted from "./components/GetStarted";
+import GetStarted from "./pages/GetStarted";
+import AddProduct from "./pages/AddProducts";
+import ViewProducts from "./pages/ViewProduct";
 
 
 
@@ -30,30 +32,8 @@ const App = () => {
 
   return (
     <>
-      {/* <div className="pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-        <Header />
-        <Hero />
-        <Benefits />
-        <Services />
-        <Roadmap />
-        <Footer /> */}
-      {/* Only show the landing page components when not on login/register pages */}
-      {/* {location.pathname !== "/login" && location.pathname !== "/register" && (
-          <>
-            <Hero />
-            <Benefits />
-            <Collaboration />
-            <Services />
-            <Pricing />
-            <Roadmap />
-            <Footer />
-            <ButtonGradient />
-          </>
-        )} */}
-      {/* </div> */}
       <Header />
       <Routes>
-
         <Route
           path="/"
           element={
@@ -63,7 +43,6 @@ const App = () => {
               <Services />
               <Roadmap />
               <ButtonGradient />
-
             </>
           }
         />
@@ -72,13 +51,11 @@ const App = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/get-started" element={<GetStarted />} />
-
+        <Route path="/add-product" element={<AddProduct />} />
+        <Route path="/view-products" element={<ViewProducts />} />
         {/* Add other routes as needed */}
       </Routes>
       <Footer />
-
-
-      
     </>
   );
 };
