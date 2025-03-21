@@ -1,13 +1,11 @@
 import { useLocation, Link } from "react-router-dom";
-import { disablePageScroll, enablePageScroll } from "scroll-lock";
+import { enablePageScroll } from "scroll-lock";
 import { paychain } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";
-import MenuSvg from "../assets/svg/MenuSvg";
 import { HamburgerMenu } from "./design/Header";
-import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode"; 
-import React, { useContext } from "react";
+import { useState} from "react";
+import  { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 
@@ -27,15 +25,6 @@ const Header = () => {
   const pathname = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
-  const toggleNavigation = () => {
-    if (openNavigation) {
-      setOpenNavigation(false);
-      enablePageScroll();
-    } else {
-      setOpenNavigation(true);
-      disablePageScroll();
-    }
-  };
 
   const handleClick = () => {
     if (!openNavigation) return;
