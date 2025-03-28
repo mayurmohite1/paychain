@@ -38,10 +38,12 @@ const Hero = () => {
             transactions secure with PayChain.
           </p>
           <Link to="/get-started">
-            <Button  white>
-              Get started
+            <Button white>
+              Get Started
             </Button>
           </Link>
+
+
         </div>
         <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">
           <div className="relative z-1 p-0.5 rounded-2xl bg-conic-gradient">

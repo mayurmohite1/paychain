@@ -1,0 +1,25 @@
+import React from 'react';
+import DashboardLayout from './DashboardLayout';
+import { LayoutDashboard, Package, FileText, Settings, LogOut } from 'lucide-react';
+
+const userNavItems = [
+  { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, key: 'dashboard' },
+  { name: 'View Products', icon: <Package className="w-5 h-5" />, key: 'view-products' },
+  { name: 'Transactions', icon: <FileText className="w-5 h-5" />, key: 'transactions' },
+  
+];
+
+const renderUserContent = (currentTab) => {
+  switch (currentTab) {
+    case 'dashboard': return <div className="text-white">User Dashboard Content</div>;
+    case 'view-products': return <div className="text-white">Available Products</div>;
+    case 'transactions': return <div className="text-white">User Transaction History</div>;
+    default: return <div className="text-white">Dashboard</div>;
+  }
+};
+
+const UserDashboard = () => {
+  return <DashboardLayout navItems={userNavItems} renderContent={renderUserContent} />;
+};
+
+export default UserDashboard;
