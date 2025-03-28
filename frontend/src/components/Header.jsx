@@ -3,7 +3,6 @@ import { enablePageScroll } from "scroll-lock";
 import { paychain } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";
-import { HamburgerMenu } from "./design/Header";
 import { useState } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -44,27 +43,17 @@ const Header = () => {
           <img src={paychain} width={200} height={40} alt="Paychain" />
         </a>
 
-
-
         <nav
-          className={`${openNavigation ? "flex" : "hidden"
-            } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8  lg:static lg:flex lg:mx-auto lg:bg-transparent`}
+          className={`${
+            openNavigation ? "flex" : "hidden"
+          } fixed top-[5rem] left-0 right-0 bottom-0 bg-n-8  lg:static lg:flex lg:mx-auto lg:bg-transparent`}
         >
-
           {location.pathname === "/get-started" ? (
             // Show only "+ Button" when on /get-started
 
-            <div
-              className="flex items-center space-x-4">
-              <Button
-                className="text-white text-3xl bg-grey-500 px-4 py-2 rounded-lg hover:bg-grey-800 transition"
-              >
-                +
-              </Button>
+            <div className="flex items-center space-x-4">
+              <appkit-button />
             </div>
-
-
-
           ) : (
             // Show regular navigation menu on other routes
             <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
@@ -73,11 +62,13 @@ const Header = () => {
                   key={item.id}
                   to={item.url}
                   onClick={handleClick}
-                  className={`block relative font-code text-2xl uppercase text-n-1 transition-colors hover:text-color-1 ${item.onlyMobile ? "lg:hidden" : ""
-                    } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${item.url === location.hash
+                  className={`block relative font-code text-2xl uppercase text-n-1 transition-colors hover:text-color-1 ${
+                    item.onlyMobile ? "lg:hidden" : ""
+                  } px-6 py-6 md:py-8 lg:-mr-0.25 lg:text-xs lg:font-semibold ${
+                    item.url === location.hash
                       ? "z-2 lg:text-n-1"
                       : "lg:text-n-1/50"
-                    } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
+                  } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
                 >
                   {item.title}
                 </Link>
@@ -86,17 +77,23 @@ const Header = () => {
           )}
         </nav>
 
-
         {/* If logged in, show Username & Logout */}
         {user ? (
           <div className="flex items-center space-x-4">
-            <span className="text-white">{user.role} <br />({user.username})</span>
-            <Button onClick={handleLogout} className="lg:flex text-red ">Logout</Button>
+            <span className="text-white">
+              {user.role} <br />({user.username})
+            </span>
+            <Button onClick={handleLogout} className="lg:flex text-red ">
+              Logout
+            </Button>
           </div>
         ) : (
           <>
             {/* ✅ Show Register & Login for guests */}
-            <Link to="/register" className="hidden mr-8 text-n-1/50 hover:text-n-1 lg:block">
+            <Link
+              to="/register"
+              className="hidden mr-8 text-n-1/50 hover:text-n-1 lg:block"
+            >
               New account
             </Link>
             <Link to="/login">
