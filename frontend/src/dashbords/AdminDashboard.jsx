@@ -1,6 +1,7 @@
 import React from 'react';
 import DashboardLayout from './DashboardLayout';
 import { LayoutDashboard, Package, ShoppingCart, FileText, PlusCircle, Settings, LogOut } from 'lucide-react';
+import AddProducts from '../pages/AddProducts';
 
 const adminNavItems = [
   { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, key: 'dashboard' },
@@ -15,7 +16,7 @@ const renderAdminContent = (currentTab) => {
   switch (currentTab) {
     case 'dashboard': return <div className="text-white">Admin Dashboard Content</div>;
     case 'view-products': return <div className="text-white">View Products Content</div>;
-    case 'add-product': return <div className="text-white">Add Product Form</div>;
+    case 'add-product': return <div className="text-white"><AddProducts/></div>;
     case 'transactions': return <div className="text-white">Transaction History</div>;
     case 'sell-customer': return <div className="text-white">Sell to Customer Interface</div>;
     default: return <div className="text-white">Dashboard</div>;

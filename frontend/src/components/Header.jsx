@@ -51,7 +51,7 @@ const Header = () => {
           {location.pathname === "/get-started" ? (
             // Show only "+ Button" when on /get-started
 
-            <div className="flex items-center space-x-4">
+            <div className="relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row">
               <appkit-button />
             </div>
           ) : (

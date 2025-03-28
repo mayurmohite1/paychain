@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminDashboard from "./AdminDashboard";
-import UserDashboard from "./UserDashboard";
+import AdminDashboard from "../dashbords/AdminDashboard";
+import UserDashboard from "../dashbords/UserDashboard";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -9,12 +9,10 @@ const GetStarted = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/login");
       return;
     }
-
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setUser({
@@ -25,15 +23,27 @@ const GetStarted = () => {
       localStorage.removeItem("token");
       navigate("/login");
     }
+
+    
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4 py-8 mt-16">
-      <div className="w-full max-w-4xl bg-gray-800 p-4 sm:p-6 md:p-8 rounded-lg shadow-lg text-center space-y-6">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">
-          Welcome to PayChain
-        </h2>
-        {user?.role === "admin" ? <AdminDashboard /> : <UserDashboard />}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-24 relative overflow-hidden">
+      <div className="w-full mx-auto bg-gray-800/70 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-2xl max-h-[calc(100vh-100px)] overflow-hidden ">
+        <div className="p-6 sm:p-8 md:p-10 lg:p-12">
+          <div className="flex flex-col items-center space-y-6">
+            <div className="w-full max-w-xl">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-6 text-center">
+                Welcome to PayChain
+              </h2>
+             
+            </div>
+
+            <div className="w-full">
+              {user?.role === "admin" ? <AdminDashboard className="fixed " /> : <UserDashboard />}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
