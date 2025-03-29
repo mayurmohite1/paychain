@@ -17,7 +17,7 @@ const ProductSchema = new mongoose.Schema({
     required: [true, "Please provide product image"],
   },
   manufacturingYear: {
-    type: Number,
+    type: Date,
     required: [true, "Please provide manufacturing year"],
   },
   price: {

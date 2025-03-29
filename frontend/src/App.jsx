@@ -97,7 +97,7 @@ const App = () => {
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/view-products" element={<ViewProducts />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </AppKitProvider>
   );
 };

@@ -40,7 +40,7 @@ const GetStarted = () => {
             </div>
 
             <div className="w-full">
-              {user?.role === "admin" ? <AdminDashboard className="fixed " /> : <UserDashboard />}
+              {user?.role === "admin" ? <AdminDashboard  /> : <UserDashboard />}
             </div>
           </div>
         </div>

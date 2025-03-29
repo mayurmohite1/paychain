@@ -12,7 +12,7 @@ const AddProducts = () => {
     name: "",
     description: "",
     image: "",
-    manufacturingYear: new Date().getFullYear(),
+    manufacturingYear: new Date(),
     price: "",
   });
 
@@ -103,20 +103,15 @@ const AddProducts = () => {
   };
 
   return (
-    <div className="w-full h-full overflow-y-auto bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-8">
+    <div className="w-full min-h-screen  bg-gray-900 text-white">
+      <div className="container mx-auto px-2 py-2">
         <div className="bg-gray-800/70 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden">
           <div className="p-6 sm:p-8 md:p-10 lg:p-12">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                 Add New Product
               </h1>
-              <button 
-                onClick={() => navigate("/get-started")}
-                className="text-gray-400 hover:text-white transition"
-              >
-                <X className="w-6 h-6" />
-              </button>
+             
             </div>
 
             {error && (
@@ -153,14 +148,14 @@ const AddProducts = () => {
                     Manufacturing Year
                   </label>
                   <input
-                    type="number"
+                    type="date"
                     name="manufacturingYear"
                     value={formData.manufacturingYear}
                     onChange={handleChange}
                     className="w-full bg-gray-700/50 border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     required
                     min="1900"
-                    max={new Date().getFullYear()}
+                    max={new Date().toISOString().split("T")[0]} // Prevent future dates
                   />
                 </div>
               </div>

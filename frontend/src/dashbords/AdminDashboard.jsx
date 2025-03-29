@@ -2,6 +2,8 @@ import React from 'react';
 import DashboardLayout from './DashboardLayout';
 import { LayoutDashboard, Package, ShoppingCart, FileText, PlusCircle, Settings, LogOut } from 'lucide-react';
 import AddProducts from '../pages/AddProducts';
+import ViewProducts from '../pages/ViewProduct';
+import Dashboard from '../pages/Dashboard';
 
 const adminNavItems = [
   { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, key: 'dashboard' },
@@ -14,8 +16,8 @@ const adminNavItems = [
 
 const renderAdminContent = (currentTab) => {
   switch (currentTab) {
-    case 'dashboard': return <div className="text-white">Admin Dashboard Content</div>;
-    case 'view-products': return <div className="text-white">View Products Content</div>;
+    case 'dashboard': return <div className="text-white"><Dashboard/></div>;
+    case 'view-products': return <div className="text-white"><ViewProducts/></div>;
     case 'add-product': return <div className="text-white"><AddProducts/></div>;
     case 'transactions': return <div className="text-white">Transaction History</div>;
     case 'sell-customer': return <div className="text-white">Sell to Customer Interface</div>;

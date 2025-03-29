@@ -66,6 +66,19 @@ exports.getProduct = async (req, res) => {
 };
 
 
+//get product count
+exports.getProductCount =async (req, res) => {
+  try {
+    const count = await Product.countDocuments();
+    res.status(200).json({ count });
+  } catch (err) {
+    console.error("Error fetching product count:", err);
+    res.status(500).json({ error: "Failed to fetch product count" });
+  }
+}
+
+
+
 
 
 

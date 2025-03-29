@@ -7,7 +7,7 @@ const DashboardLayout = ({ navItems, renderContent }) => {
   return (
     <div className="flex h-screen w-full bg-gray-900">
     <SidebarNavigation navItems={navItems} onTabChange={setCurrentTab} />
-    <main className="flex-grow p-6 overflow-y-auto text-white mt-16">
+    <main className="flex-grow p-6 overflow-y-auto scrollbar-hidden text-white mt-16 mb-10 hide-scrollbar">
       {renderContent(currentTab)}
     </main>
   </div>
