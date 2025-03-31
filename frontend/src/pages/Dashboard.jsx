@@ -5,6 +5,7 @@ import axios from 'axios';
 const Dashboard = () => {
 
     const [productCount, setProductCount] = useState(0);
+    const [userCount,setUserCount]=useState(0);
 
     // Fetch Product Count from Backend with Token Authorization
     const fetchProductCount = async () => {
@@ -14,7 +15,7 @@ const Dashboard = () => {
           throw new Error("Authentication required");
         }
   
-        const response = await axios.get("http://localhost:5000/api/products/count", {
+        const response = await  axios.get("http://localhost:5000/api/products/count", {
           headers: {
             Authorization: `Bearer ${token}`, // Pass token in headers
           },
@@ -25,9 +26,29 @@ const Dashboard = () => {
         console.error("Error fetching product count:", error);
       }
     };
+    
+    const fetchUserCount = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            throw new Error("Authentication required");
+          }
+    
+          const response = await  axios.get("http://localhost:5000/api/users/count", {
+            headers: {
+              Authorization: `Bearer ${token}`, // Pass token in headers
+            },
+          });
+    
+          setUserCount(response.data.count);
+        } catch (error) {
+          console.error("Error fetching product count:", error);
+        }
+      };
   
     useEffect(() => {
-      fetchProductCount();
+      fetchProductCount(),
+      fetchUserCount();
     }, []);
 
 
@@ -48,7 +69,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
                     <h3 className="text-gray-400 mb-2">Active Users</h3>
-                    <p className="text-3xl font-bold text-purple-400">843</p>
+                    <p className="text-3xl font-bold text-purple-400">{userCount}</p>
                 </div>
             </div>
 

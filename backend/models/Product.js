@@ -33,6 +33,10 @@ const ProductSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  stock:{
+    type:Number,
+    required:true
+  }
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
