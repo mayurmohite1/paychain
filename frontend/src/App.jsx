@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import ButtonGradient from "./assets/svg/ButtonGradient";
 import Benefits from "./components/Benefits";
-import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Roadmap from "./components/Roadmap";
@@ -17,6 +16,7 @@ import { useEffect } from "react";
 import GetStarted from "./pages/GetStarted";
 import AddProduct from "./pages/AddProducts";
 import ViewProducts from "./pages/ViewProduct";
+import SellProducts from "./pages/SellProducts";
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
@@ -96,6 +96,7 @@ const App = () => {
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/view-products" element={<ViewProducts />} />
+        <Route path="/sell-products" element={<SellProducts />} />
       </Routes>
       {/* <Footer /> */}
     </AppKitProvider>

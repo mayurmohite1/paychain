@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SidebarNavigation from './SidebarNavigation';
 
 const DashboardLayout = ({ navItems, renderContent }) => {
