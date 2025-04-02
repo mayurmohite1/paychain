@@ -14,7 +14,7 @@ const AddProducts = () => {
     image: "",
     manufacturingYear: new Date(),
     price: "",
-    stock: "", // Field name is "stock" per your latest code
+    quantity: "", // Field name is "stock" per your latest code
   });
   
   // Create refs for scrolling to elements
@@ -48,7 +48,7 @@ const AddProducts = () => {
   useEffect(() => {
     if (formData.image && bottomRef.current) {
       setTimeout(() => {
-        bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+        bottomRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }, 100);
     }
   }, [formData.image]);
@@ -110,7 +110,7 @@ const AddProducts = () => {
         image: "",
         manufacturingYear: new Date().getFullYear(),
         price: "",
-        stock: "",
+        quantity: "",
       });
 
       setTimeout(() => {
@@ -124,7 +124,7 @@ const AddProducts = () => {
       setIsLoading(false);
     }
   };
-
+  overflow-y-auto
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white overflow-y-auto">
       <div className="container mx-auto px-2 py-2 pb-16">
@@ -223,8 +223,8 @@ const AddProducts = () => {
                   </label>
                   <input
                     type="number"
-                    name="stock"
-                    value={formData.stock}
+                    name="quantity"
+                    value={formData.quantity}
                     onChange={handleChange}
                     className="w-full bg-gray-700/50 border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     required

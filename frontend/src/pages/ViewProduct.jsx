@@ -143,9 +143,9 @@ const ViewProducts = () => {
                     <span className="text-lg font-bold text-green-600 dark:text-green-400">
                       ${parseFloat(product.price || 0).toFixed(2)}
                     </span>
-                    {product.stock > 0 ? (
+                    {product.quantity > 0 ? (
                       <span className="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 text-sm rounded-full font-medium">
-                        In Stock: {product.stock}
+                        In Stock: {product.quantity}
                       </span>
                     ) : (
                       <span className="px-2 py-1 bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100 text-sm rounded-full font-medium">

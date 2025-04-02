@@ -4,6 +4,7 @@ import { LayoutDashboard, Package, ShoppingCart, FileText, PlusCircle, Settings,
 import AddProducts from '../pages/AddProducts';
 import ViewProducts from '../pages/ViewProduct';
 import Dashboard from '../pages/Dashboard';
+import SellProducts from "../pages/SellProducts"
 
 const adminNavItems = [
   { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, key: 'dashboard' },
@@ -20,7 +21,7 @@ const renderAdminContent = (currentTab) => {
     case 'view-products': return <div className="text-white"><ViewProducts/></div>;
     case 'add-product': return <div className="text-white"><AddProducts/></div>;
     case 'transactions': return <div className="text-white">Transaction History</div>;
-    case 'sell-customer': return <div className="text-white">Sell to Customer Interface</div>;
+    case 'sell-customer': return <div className="text-white"><SellProducts/></div>;
     default: return <div className="text-white">Dashboard</div>;
   }
 };

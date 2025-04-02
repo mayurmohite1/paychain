@@ -33,7 +33,7 @@ const ProductSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  stock:{
+  quantity:{
     type:Number,
     required:true
   }

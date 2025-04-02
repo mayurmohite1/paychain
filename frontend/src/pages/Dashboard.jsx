@@ -126,6 +126,7 @@ const Dashboard = () => {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
                 <button className="bg-blue-600 hover:bg-blue-700 p-3 rounded-lg transition">
                     Add New Product
                 </button>
