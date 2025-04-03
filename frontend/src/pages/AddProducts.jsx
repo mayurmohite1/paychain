@@ -16,7 +16,7 @@ const AddProducts = () => {
     price: "",
     quantity: "", // Field name is "stock" per your latest code
   });
-  
+
   // Create refs for scrolling to elements
   const bottomRef = useRef(null);
   const errorRef = useRef(null);
@@ -48,7 +48,10 @@ const AddProducts = () => {
   useEffect(() => {
     if (formData.image && bottomRef.current) {
       setTimeout(() => {
-        bottomRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        bottomRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 100);
     }
   }, [formData.image]);
@@ -82,37 +85,71 @@ const AddProducts = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   setError("");
+  //   setSuccess("");
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     console.log("Token:", token);
+
+  //     if (!token) {
+  //       throw new Error("Authentication required");
+  //     }
+
+  //     // Convert price to string before sending to backend
+
+  //     const formattedPrice = parseFloat(formData.price).toFixed(15);
+
+  //     console.log(formattedPrice);
+
+  //     await axios.post("http://localhost:5000/api/products",  { ...formData, price: formattedPrice }, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     console("data added sucessfully");
+
+  //     setSuccess("Product added successfully!");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
     setSuccess("");
-  
+
     try {
       const token = localStorage.getItem("token");
-      console.log("Token:", token);
-
       if (!token) {
         throw new Error("Authentication required");
       }
-  
-      // Convert price to string before sending to backend
-      
-      const formattedPrice = parseFloat(formData.price).toFixed(15); 
 
-      console.log(formattedPrice);
-  
-      await axios.post("http://localhost:5000/api/products",  { ...formData, price: formattedPrice }, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      // Validate price
+      const price = parseFloat(formData.price);
+      if (isNaN(price) || price < 0) {
+        throw new Error("Invalid price value");
+      }
+
+      // Send the original string value to preserve precision
+      await axios.post(
+        "http://localhost:5000/api/products",
+        {
+          ...formData,
+          price: formData.price, // Send as is to preserve precision
         },
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      console("data added sucessfully");
-  
       setSuccess("Product added successfully!");
-  
       setFormData({
         name: "",
         description: "",
@@ -121,7 +158,7 @@ const AddProducts = () => {
         price: "",
         quantity: "",
       });
-  
+
       setTimeout(() => {
         navigate("/get-started");
       }, 2000);
@@ -133,8 +170,6 @@ const AddProducts = () => {
       setIsLoading(false);
     }
   };
-  
-
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white overflow-y-auto">
       <div className="container mx-auto px-2 py-2 pb-16">
@@ -147,8 +182,8 @@ const AddProducts = () => {
             </div>
 
             {error && (
-              <div 
-                ref={errorRef} 
+              <div
+                ref={errorRef}
                 className="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded mb-4"
               >
                 {error}
@@ -221,7 +256,10 @@ const AddProducts = () => {
                     onChange={(e) => {
                       const priceValue = e.target.value;
                       // More strict validation - requires at least one digit before optional decimal
-                      if (/^\d+(\.\d{0,15})?$/.test(priceValue) || priceValue === "") {
+                      if (
+                        /^\d+(\.\d{0,15})?$/.test(priceValue) ||
+                        priceValue === ""
+                      ) {
                         setFormData({ ...formData, price: priceValue });
                       }
                     }}
@@ -281,7 +319,10 @@ const AddProducts = () => {
                 )}
               </div>
 
-              <div className="flex justify-end space-x-4 mt-6 pt-2" ref={bottomRef}>
+              <div
+                className="flex justify-end space-x-4 mt-6 pt-2"
+                ref={bottomRef}
+              >
                 <button
                   type="button"
                   onClick={() => navigate("/get-started")}
