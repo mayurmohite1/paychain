@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 const ViewProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const containerRef = useRef(null);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,33 +23,14 @@ const ViewProducts = () => {
         // Log the response to see its structure
         console.log("Raw API Response:", response);
         console.log("Response data type:", typeof response.data);
-        // Parse JSON if needed
-        let processedData = response.data;
-        // If the response is a JSON string, parse it
-        if (typeof processedData === "string") {
-          try {
-            processedData = JSON.parse(processedData);
-            console.log("Parsed JSON data:", processedData);
-          } catch (e) {
-            console.error("Failed to parse JSON:", e);
-          }
-        }
-        // Handle different data structures
-        if (Array.isArray(processedData)) {
-          setProducts(processedData);
-        } else if (processedData && typeof processedData === "object") {
-          // Check if the object has a products array property
-          if (processedData.products && Array.isArray(processedData.products)) {
-            setProducts(processedData.products);
-          } else {
-            // Convert object of objects to array if needed
-            const productsArray = Object.values(processedData);
-            setProducts(productsArray);
-          }
-        } else {
-          throw new Error("Could not process product data");
-        }
+        // Process response data
+        const data = typeof response.data === 'string'
+          ? JSON.parse(response.data)
+          : response.data;
+
+        setProducts(Array.isArray(data) ? data : data.products || Object.values(data));
         setLoading(false);
+
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message || "Failed to fetch products");
@@ -56,6 +39,18 @@ const ViewProducts = () => {
     };
     fetchProducts();
   }, []);
+
+
+  useEffect(() => {
+    if (containerRef.current && products.length > 0) {
+      // Smooth scroll to bottom when new products arrive
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [products.length]);
+
 
   if (loading) {
     return (
@@ -97,12 +92,12 @@ const ViewProducts = () => {
   console.log("Products to render:", productsToRender);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-4 sm:p-6 transition-colors duration-300">
+    <div ref={containerRef} className="bg-gray-50 dark:bg-gray-900 flex-1 overflow-y-auto p-4 mb-20 sm:p-6">
       <div className="container mx-auto max-w-6xl">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center">
           Available Products
         </h1>
-        
+
         {productsToRender.length === 0 ? (
           <div className="text-center text-xl bg-gray-100 dark:bg-gray-800 rounded-lg p-8 shadow-md">
             <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -111,7 +106,7 @@ const ViewProducts = () => {
             No products available at the moment.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20 sm:gap-6 pb-10">
             {productsToRender.map((product, index) => (
               <div
                 key={index}
@@ -123,10 +118,10 @@ const ViewProducts = () => {
                       src={product.image}
                       alt={product.name || "Product image"}
                       className="absolute top-0 left-0 w-full h-full object-contain bg-gray-100 dark:bg-gray-700 p-2"
-                      // onError={(e) => {
-                      //   e.target.onerror = null;
-                      //   e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
-                      // }}
+                    // onError={(e) => {
+                    //   e.target.onerror = null;
+                    //   e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
+                    // }}
                     />
                   </div>
                 )}

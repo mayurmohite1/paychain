@@ -17,6 +17,7 @@ import GetStarted from "./pages/GetStarted";
 import AddProduct from "./pages/AddProducts";
 import ViewProducts from "./pages/ViewProduct";
 import SellProducts from "./pages/SellProducts";
+import AdminDashboard from "./dashbords/AdminDashboard";
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
@@ -94,6 +95,8 @@ const App = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/get-started" element={<GetStarted />} />
+        <Route path="/get-started/:tab" element={<AdminDashboard />} />
+
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/view-products" element={<ViewProducts />} />
         <Route path="/sell-products" element={<SellProducts />} />

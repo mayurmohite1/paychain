@@ -28,7 +28,7 @@ const GetStarted = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-24 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-24 relative overflow-hidden overflow-y-auto">
       <div className="w-full mx-auto bg-gray-800/70 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-2xl max-h-[calc(100vh-100px)] overflow-hidden ">
         <div className="p-6 sm:p-8 md:p-10 lg:p-12">
           <div className="flex flex-col items-center space-y-6">
@@ -39,7 +39,7 @@ const GetStarted = () => {
              
             </div>
 
-            <div className="w-full">
+            <div className="w-full overflow-y-auto">
               {user?.role === "admin" ? <AdminDashboard  /> : <UserDashboard />}
             </div>
           </div>

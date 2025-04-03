@@ -87,32 +87,41 @@ const AddProducts = () => {
     setIsLoading(true);
     setError("");
     setSuccess("");
-
+  
     try {
       const token = localStorage.getItem("token");
+      console.log("Token:", token);
 
       if (!token) {
         throw new Error("Authentication required");
       }
+  
+      // Convert price to string before sending to backend
+      
+      const formattedPrice = parseFloat(formData.price).toFixed(15); 
 
-      await axios.post("http://localhost:5000/api/products", formData, {
+      console.log(formattedPrice);
+  
+      await axios.post("http://localhost:5000/api/products",  { ...formData, price: formattedPrice }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
+      console("data added sucessfully");
+  
       setSuccess("Product added successfully!");
-
+  
       setFormData({
         name: "",
         description: "",
         image: "",
-        manufacturingYear: new Date().getFullYear(),
+        manufacturingYear: new Date(),
         price: "",
         quantity: "",
       });
-
+  
       setTimeout(() => {
         navigate("/get-started");
       }, 2000);
@@ -124,7 +133,8 @@ const AddProducts = () => {
       setIsLoading(false);
     }
   };
-  overflow-y-auto
+  
+
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white overflow-y-auto">
       <div className="container mx-auto px-2 py-2 pb-16">
@@ -208,11 +218,17 @@ const AddProducts = () => {
                     type="number"
                     name="price"
                     value={formData.price}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const priceValue = e.target.value;
+                      // More strict validation - requires at least one digit before optional decimal
+                      if (/^\d+(\.\d{0,15})?$/.test(priceValue) || priceValue === "") {
+                        setFormData({ ...formData, price: priceValue });
+                      }
+                    }}
                     className="w-full bg-gray-700/50 border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     required
                     min="0"
-                    step="0.01"
+                    step="0.000000000000001"
                     placeholder="Enter price"
                   />
                 </div>

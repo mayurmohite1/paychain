@@ -21,7 +21,7 @@ const ProductSchema = new mongoose.Schema({
     required: [true, "Please provide manufacturing year"],
   },
   price: {
-    type: Number,
+    type: mongoose.Types.Decimal128, // Supports high-precision decimal
     required: [true, "Please provide product price"],
   },
   createdBy: {
