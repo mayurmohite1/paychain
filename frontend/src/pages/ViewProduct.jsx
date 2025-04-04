@@ -6,6 +6,15 @@ const ViewProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const containerRef = useRef(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+  };
 
 
   useEffect(() => {
@@ -110,6 +119,8 @@ const ViewProducts = () => {
             {productsToRender.map((product, index) => (
               <div
                 key={index}
+                onClick={() => handleProductClick(product)}
+
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col"
               >
                 {product.image && (
@@ -153,6 +164,42 @@ const ViewProducts = () => {
             ))}
           </div>
         )}
+
+        {selectedProduct && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full relative">
+              <button className="absolute top-2 right-2 text-gray-700" onClick={closeModal}>
+                ✖
+              </button>
+              {selectedProduct.image && (
+                <img
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  className="w-full h-60 object-contain bg-gray-100 dark:bg-gray-700 p-2 rounded-lg"
+                />
+              )}
+              <h2 className="text-2xl font-bold mt-4">{selectedProduct.name}</h2>
+              <p className="text-gray-600 mt-2">{selectedProduct.description}</p>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-xl font-bold text-green-600">
+                  ETH {parseFloat(selectedProduct.price || 0).toFixed(15)}
+                </span>
+                {selectedProduct.quantity > 0 ? (
+                  <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">In Stock</span>
+                ) : (
+                  <span className="px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full">Out of Stock</span>
+                )}
+              </div>
+              <button
+                className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
+                onClick={closeModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

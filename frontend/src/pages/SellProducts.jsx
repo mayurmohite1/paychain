@@ -27,7 +27,11 @@ const SellProducts = () => {
       try {
         setLoading(true);
         const response = await axios.get("http://localhost:5000/api/products");
-        setProducts(response.data.products);
+        console.log("Fetched Products:", response.data.products); // Debugging log
+        setProducts(response.data.products.map((product) => ({
+          ...product,
+          price: Number(product.price) || 0, // Ensure price is always a number
+        })));
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch products");
@@ -36,6 +40,7 @@ const SellProducts = () => {
     };
     fetchProducts();
   }, []);
+  
 
   // Filter products based on search term
   useEffect(() => {
@@ -83,12 +88,18 @@ const SellProducts = () => {
     if (!exists) {
       setSelectedProducts((prev) => [
         ...prev,
-        { ...product, quantity: 1, totalPrice: product.price },
+        {
+          ...product,
+          price: Number(product.price) || 0,  // Convert price to a number
+          quantity: 1,
+          totalPrice: Number(product.price) || 0, // Ensure totalPrice is also a number
+        },
       ]);
     }
     setSearchTerm("");
     setShowProductsList(false);
   };
+  
 
   // Update product quantity
   const updateQuantity = (productId, quantity) => {
@@ -312,7 +323,7 @@ const SellProducts = () => {
                           <div>
                             <div className="font-medium text-gray-200">{product.name}</div>
                             <div className="text-sm text-gray-400">
-                              Price: <span className="font-semibold text-green-400">${product.price.toFixed(2)}</span>
+                              Price: <span className="font-semibold text-green-400">ETH {product.price.toFixed(2)}</span>
                             </div>
                           </div>
                           <button 
@@ -365,7 +376,7 @@ const SellProducts = () => {
                             {new Date(product.manufacturingYear).getFullYear()}
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-right text-sm text-gray-300">
-                            ${product.price.toFixed(2)}
+                          ETH{!isNaN(product.price) ? Number(product.price).toFixed(2) : "0.00"}
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-center">
                             <input
@@ -379,7 +390,7 @@ const SellProducts = () => {
                             />
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-right font-semibold text-green-400 text-sm">
-                            ${product.totalPrice.toFixed(2)}
+                            ETH {product.totalPrice.toFixed(2)}
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-center">
                             <button
