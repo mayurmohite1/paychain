@@ -1,7 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Search, Plus, Trash2, ShoppingCart, User, Phone, Mail, Wallet } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Trash2,
+  ShoppingCart,
+  User,
+  Phone,
+  Mail,
+  Wallet,
+} from "lucide-react";
+import { ethers } from "ethers";
+import ProductSale from "../../../artifacts/contracts/ProductSale.sol/ProductSale.json";
 
+const CONTRACT_ADDRESS = "0x9f7c3F1EDc3D268c334a605C8602F2E1A39f586c";
 const SellProducts = () => {
   // Customer information state
   const [customer, setCustomer] = useState({
@@ -20,6 +32,8 @@ const SellProducts = () => {
   // Loading and error states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Transaction status
+  const [transactionStatus, setTransactionStatus] = useState("");
 
   // Fetch all products on component mount
   useEffect(() => {
@@ -28,10 +42,12 @@ const SellProducts = () => {
         setLoading(true);
         const response = await axios.get("http://localhost:5000/api/products");
         console.log("Fetched Products:", response.data.products); // Debugging log
-        setProducts(response.data.products.map((product) => ({
-          ...product,
-          price: Number(product.price) || 0, // Ensure price is always a number
-        })));
+        setProducts(
+          response.data.products.map((product) => ({
+            ...product,
+            price: Number(product.price) || 0, // Ensure price is always a number
+          }))
+        );
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch products");
@@ -40,7 +56,6 @@ const SellProducts = () => {
     };
     fetchProducts();
   }, []);
-  
 
   // Filter products based on search term
   useEffect(() => {
@@ -72,13 +87,16 @@ const SellProducts = () => {
   // Handle click outside product list
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showProductsList && !event.target.closest('.product-search-container')) {
+      if (
+        showProductsList &&
+        !event.target.closest(".product-search-container")
+      ) {
         setShowProductsList(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showProductsList]);
 
@@ -90,7 +108,7 @@ const SellProducts = () => {
         ...prev,
         {
           ...product,
-          price: Number(product.price) || 0,  // Convert price to a number
+          price: Number(product.price) || 0, // Convert price to a number
           quantity: 1,
           totalPrice: Number(product.price) || 0, // Ensure totalPrice is also a number
         },
@@ -99,7 +117,6 @@ const SellProducts = () => {
     setSearchTerm("");
     setShowProductsList(false);
   };
-  
 
   // Update product quantity
   const updateQuantity = (productId, quantity) => {
@@ -133,17 +150,70 @@ const SellProducts = () => {
       .toFixed(2);
   };
 
-  // Handle form submission
+  // Connect to wallet and get contract instance
+  const getContractInstance = async () => {
+    try {
+      // Check if window.ethereum is available (MetaMask or other web3 provider)
+      if (!window.ethereum) {
+        throw new Error(
+          "No Ethereum wallet found. Please install MetaMask or another compatible wallet."
+        );
+      }
+
+      // Request account access
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+
+      // Create a provider
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      // Get the signer
+      const signer = provider.getSigner();
+
+      // Create contract instance
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        ProductSale.abi,
+        signer
+      );
+
+      return { signer, contract };
+    } catch (error) {
+      console.error("Error connecting to wallet:", error);
+      throw error;
+    }
+  };
+
+  const listProductInContract = async (product) => {
+    try {
+      const { contract } = await getContractInstance();
+
+      // Convert price to wei
+      const priceInWei = ethers.utils.parseEther(product.price.toString());
+
+      // List product in smart contract
+      const transaction = await contract.listProduct(
+        product.name,
+        product.description,
+        priceInWei,
+        product.quantity
+      );
+
+      await transaction.wait();
+
+      // Return the product ID from the contract
+      const events = await contract.queryFilter("ProductListed");
+      const latestEvent = events[events.length - 1];
+      return latestEvent.args.id.toNumber();
+    } catch (error) {
+      console.error("Error listing product:", error);
+      throw error;
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate customer information
-    if (
-      !customer.fullName ||
-      !customer.contactNumber ||
-      !customer.email ||
-      !customer.walletAddress
-    ) {
-      setError("Please provide all customer information");
+    if (!customer.walletAddress) {
+      setError("Please provide customer wallet address");
       return;
     }
     // Validate product selection
@@ -151,22 +221,26 @@ const SellProducts = () => {
       setError("Please select at least one product");
       return;
     }
+
     try {
       setLoading(true);
-      // Format sale data - commented out as in original code
-      // const saleData = {
-      //   customer,
-      //   products: selectedProducts.map((product) => ({
-      //     productId: product._id,
-      //     quantity: product.quantity,
-      //     pricePerUnit: product.price,
-      //     totalPrice: product.totalPrice,
-      //   })),
-      //   totalAmount: calculateTotal(),
-      // };
-      // // Submit sale to backend
-      // const response = await axios.post("/api/sales", saleData);
-      // Reset form after successful submission
+      setError("");
+      setTransactionStatus("Connecting to wallet...");
+
+      // Process blockchain transactions for each product
+      setTransactionStatus("Processing blockchain transactions...");
+      const transactionHashes = [];
+
+      // Process each product as a separate transaction
+      for (const product of selectedProducts) {
+        const hash = await processPurchaseTransaction(
+          product,
+          customer.walletAddress
+        );
+        transactionHashes.push(hash);
+      }
+
+      // Reset form after successful transactions
       setCustomer({
         fullName: "",
         contactNumber: "",
@@ -175,18 +249,60 @@ const SellProducts = () => {
       });
       setSelectedProducts([]);
       setSearchTerm("");
-      // Show success message or redirect
-      alert("Sale completed successfully!");
+      setTransactionStatus("");
+
+      // Show success message
+      alert(
+        "Transactions completed successfully! Transaction hashes: " +
+          transactionHashes.join(", ")
+      );
       setLoading(false);
     } catch (err) {
-      setError("Failed to process sale. Please try again.");
+      console.error("Transaction error:", err);
+      setError(
+        `Failed to process transaction: ${err.message || "Unknown error"}`
+      );
+      setTransactionStatus("");
       setLoading(false);
     }
   };
 
+  // Update the processPurchaseTransaction function
+  const processPurchaseTransaction = async (product, buyerAddress) => {
+    try {
+      const { contract } = await getContractInstance();
+
+      // First list the product in the contract
+      const contractProductId = await listProductInContract(product);
+
+      // Calculate total price in wei
+      const priceInWei = ethers.utils.parseEther(
+        (product.price * product.quantity).toString()
+      );
+
+      // Purchase the product using the returned product ID
+      const transaction = await contract.purchaseProduct(
+        contractProductId,
+        product.quantity,
+        {
+          value: priceInWei,
+          from: buyerAddress, // Specify the buyer's address
+        }
+      );
+
+      setTransactionStatus(
+        `Transaction submitted. Hash: ${transaction.hash}. Waiting for confirmation...`
+      );
+
+      await transaction.wait();
+      return transaction.hash;
+    } catch (error) {
+      console.error("Transaction error:", error);
+      throw error;
+    }
+  };
   return (
     <div className="bg-gradient-to-b from-gray-900 to-gray-800 p-4 sm:p-6 rounded-xl shadow-lg w-full mx-auto -mt-3 my-16 text-gray-200 h-full overflow-y-auto">
-      
       <div className="flex items-center justify-between mb-6 border-b border-gray-700 pb-4 sticky top-0 bg-gray-900 z-10">
         <h2 className="text-xl sm:text-3xl font-bold text-white flex items-center">
           <ShoppingCart className="mr-2 text-blue-400" />
@@ -196,17 +312,26 @@ const SellProducts = () => {
           {selectedProducts.length} item(s) selected
         </div>
       </div>
-      
+
       <div className="max-h-full overflow-y-auto pb-20">
         {error && (
           <div className="bg-red-900/30 border-l-4 border-red-500 text-red-200 p-4 rounded-md mb-6 flex items-start">
             <span className="font-medium mr-2">Error:</span> {error}
           </div>
         )}
-        
+
+        {transactionStatus && (
+          <div className="bg-blue-900/30 border-l-4 border-blue-500 text-blue-200 p-4 rounded-md mb-6 flex items-start">
+            <span className="font-medium mr-2">Status:</span>{" "}
+            {transactionStatus}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-100 mb-4">Customer Information</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">
+              Customer Information
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <div className="relative">
                 <label className="block text-gray-300 font-medium mb-2">
@@ -286,15 +411,20 @@ const SellProducts = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-100 mb-4">Product Selection</h3>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">
+              Product Selection
+            </h3>
             <div className="product-search-container relative mb-4">
               <label className="block text-gray-300 font-medium mb-2">
                 Search Products
               </label>
               <div className="relative">
-                <Search className="absolute left-3 top-3 text-gray-500" size={18} />
+                <Search
+                  className="absolute left-3 top-3 text-gray-500"
+                  size={18}
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -307,9 +437,25 @@ const SellProducts = () => {
                   <div className="absolute z-20 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-64 overflow-auto">
                     {loading ? (
                       <div className="p-4 text-center text-gray-400 flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Loading products...
                       </div>
@@ -321,13 +467,18 @@ const SellProducts = () => {
                           onClick={() => addProduct(product)}
                         >
                           <div>
-                            <div className="font-medium text-gray-200">{product.name}</div>
+                            <div className="font-medium text-gray-200">
+                              {product.name}
+                            </div>
                             <div className="text-sm text-gray-400">
-                              Price: <span className="font-semibold text-green-400">ETH {product.price.toFixed(2)}</span>
+                              Price:{" "}
+                              <span className="font-semibold text-green-400">
+                                ETH {product.price.toFixed(2)}
+                              </span>
                             </div>
                           </div>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/50 p-1 rounded-full transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -347,26 +498,66 @@ const SellProducts = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="overflow-hidden rounded-lg border border-gray-700">
               {selectedProducts.length > 0 ? (
                 <div className="overflow-x-auto max-w-full">
                   <table className="min-w-full divide-y divide-gray-700">
                     <thead className="bg-gray-900 sticky top-0">
                       <tr>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Product</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell">Year</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Qty</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Total</th>
-                        <th scope="col" className="py-3 px-2 sm:px-4 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Action</th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Product
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Description
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell"
+                        >
+                          Year
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Price
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-center text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Qty
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Total
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 px-2 sm:px-4 text-center text-xs font-medium text-gray-400 uppercase tracking-wider"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-gray-800 divide-y divide-gray-700">
                       {selectedProducts.map((product) => (
-                        <tr key={product._id} className="hover:bg-gray-750 transition-colors">
-                          <td className="py-3 px-2 sm:py-4 sm:px-4 whitespace-nowrap font-medium text-gray-200 text-sm">{product.name}</td>
+                        <tr
+                          key={product._id}
+                          className="hover:bg-gray-750 transition-colors"
+                        >
+                          <td className="py-3 px-2 sm:py-4 sm:px-4 whitespace-nowrap font-medium text-gray-200 text-sm">
+                            {product.name}
+                          </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-sm text-gray-400 max-w-xs truncate">
                             {product.description.length > 30
                               ? `${product.description.substring(0, 30)}...`
@@ -376,7 +567,10 @@ const SellProducts = () => {
                             {new Date(product.manufacturingYear).getFullYear()}
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-right text-sm text-gray-300">
-                          ETH{!isNaN(product.price) ? Number(product.price).toFixed(2) : "0.00"}
+                            ETH{" "}
+                            {!isNaN(product.price)
+                              ? Number(product.price).toFixed(2)
+                              : "0.00"}
                           </td>
                           <td className="py-3 px-2 sm:py-4 sm:px-4 text-center">
                             <input
@@ -414,7 +608,7 @@ const SellProducts = () => {
                           Total Amount:
                         </td>
                         <td className="py-3 px-2 sm:py-3 sm:px-4 text-right font-bold text-lg text-green-400">
-                          ${calculateTotal()}
+                          ETH {calculateTotal()}
                         </td>
                         <td className="py-3 px-4"></td>
                       </tr>
@@ -424,12 +618,14 @@ const SellProducts = () => {
               ) : (
                 <div className="text-center py-8 border border-dashed border-gray-600 rounded-lg bg-gray-750">
                   <div className="text-gray-400 mb-2">No products selected</div>
-                  <div className="text-sm text-gray-500">Search and add products to continue</div>
+                  <div className="text-sm text-gray-500">
+                    Search and add products to continue
+                  </div>
                 </div>
               )}
             </div>
           </div>
-          
+
           <div className="flex justify-end sticky bottom-0 py-4 bg-gradient-to-t from-gray-900 to-transparent z-10">
             <button
               type="submit"
@@ -442,9 +638,25 @@ const SellProducts = () => {
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 sm:h-5 sm:w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Processing...
                 </>
