@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', { username, email, password });
       setMessage('Registration successful! You can now login.');
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setMessage('User already exists. Please login.');

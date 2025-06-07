@@ -85,36 +85,8 @@ const AddProducts = () => {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-  //   setError("");
-  //   setSuccess("");
+  
 
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     console.log("Token:", token);
-
-  //     if (!token) {
-  //       throw new Error("Authentication required");
-  //     }
-
-  //     // Convert price to string before sending to backend
-
-  //     const formattedPrice = parseFloat(formData.price).toFixed(15);
-
-  //     console.log(formattedPrice);
-
-  //     await axios.post("http://localhost:5000/api/products",  { ...formData, price: formattedPrice }, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     console("data added sucessfully");
-
-  //     setSuccess("Product added successfully!");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,6 +97,8 @@ const AddProducts = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
+          console.error("No token found. Please login first.");
+
         throw new Error("Authentication required");
       }
 

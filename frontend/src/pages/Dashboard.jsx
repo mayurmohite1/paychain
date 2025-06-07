@@ -2,10 +2,13 @@ import React from 'react'
 import { useState,useEffect } from 'react';
 import axios from 'axios';
 
+
 const Dashboard = () => {
 
     const [productCount, setProductCount] = useState(0);
     const [userCount,setUserCount]=useState(0);
+    const [totalSales, setTotalSales] = useState(0); // 🔸 State for total sales
+
 
     // Fetch Product Count from Backend with Token Authorization
     const fetchProductCount = async () => {
@@ -45,10 +48,30 @@ const Dashboard = () => {
           console.error("Error fetching product count:", error);
         }
       };
+
+    const fetchTotalSales = async () => {
+          try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Authentication required");
+
+            const response = await axios.get("http://localhost:5000/api/products/sales/total", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setTotalSales(response.data.totalSales);
+          } catch (error) {
+            console.error("Error fetching total sales:", error);
+          }
+  };
+
+
+
   
     useEffect(() => {
       fetchProductCount(),
       fetchUserCount();
+      fetchTotalSales(); // 🔸 Fetch total sales
+
     }, []);
 
 
@@ -65,7 +88,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
                     <h3 className="text-gray-400 mb-2">Total Sales</h3>
-                    <p className="text-3xl font-bold text-green-400">$24,500</p>
+                    <p className="text-3xl font-bold text-green-400">{totalSales}</p>
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
                     <h3 className="text-gray-400 mb-2">Active Users</h3>
@@ -74,7 +97,7 @@ const Dashboard = () => {
             </div>
 
             {/* Recent Sales */}
-            <div className="bg-gray-800 rounded-lg p-4">
+            {/* <div className="bg-gray-800 rounded-lg p-4">
                 <h3 className="text-xl font-bold mb-4">Recent Sales</h3>
                 <table className="w-full">
                     <thead>
@@ -122,18 +145,22 @@ const Dashboard = () => {
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> */}
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
-                <button className="bg-blue-600 hover:bg-blue-700 p-3 rounded-lg transition">
+                <div className="bg-blue-600 hover:bg-blue-700 p-3 rounded-lg transition">
+                  <Link
+                     to="/add-product">
                     Add New Product
-                </button>
+                  </Link>
+                    
+                </div>
                 <button className="bg-green-600 hover:bg-green-700 p-3 rounded-lg transition">
                     View All Transactions
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };

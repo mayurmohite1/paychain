@@ -4,7 +4,8 @@ const {
   createProduct,
   getAllProducts,
   getProduct,
-  getProductCount
+  getProductCount,
+  getTotalSales
 } = require("../Controllers/Product");
 const { authenticateUser, authorizeAdmin } = require("../middlewares/auth");
 const Product = require('../models/Product');
@@ -24,6 +25,7 @@ router.get("/:id", getProduct);
 router.post("/", authenticateUser, authorizeAdmin, createProduct);
 // GET /api/products/count
 
+router.get("/sales/total",  getTotalSales); // or remove middleware if not needed
 
 
 

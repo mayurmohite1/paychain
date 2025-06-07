@@ -19,14 +19,14 @@ import { AuthContext } from '../AuthContext';
       });
 
       if (response.data.token) {
-        console.log("Received Token:", response.data.token); // ✅ Debugging Line
+        // console.log("Received Token:", response.data.token); // ✅ Debugging Line
         login(response.data.token);
         navigate("/");
       } else {
         setMessage("Login failed. No token received.");
       }
     } catch (error) {
-      console.error("Login Error:", error);
+      // console.error("Login Error:", error);
       setMessage("Error logging in. Please try again.");
     }
   };
