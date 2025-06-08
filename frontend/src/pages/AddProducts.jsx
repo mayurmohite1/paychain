@@ -84,13 +84,6 @@ const AddProducts = () => {
       reader.readAsDataURL(file);
     }
   };
-
-<<<<<<< HEAD
-=======
-  
-
-
->>>>>>> 5d1fa826d2a213903259ba8aea1c01997834dff5
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
