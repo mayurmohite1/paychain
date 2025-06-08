@@ -85,6 +85,12 @@ const AddProducts = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+  
+
+
+>>>>>>> 5d1fa826d2a213903259ba8aea1c01997834dff5
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -94,6 +100,8 @@ const AddProducts = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
+          console.error("No token found. Please login first.");
+
         throw new Error("Authentication required");
       }
 

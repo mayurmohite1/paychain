@@ -93,7 +93,42 @@ exports.getProductCount = async (req, res) => {
     const count = await Product.countDocuments();
     res.status(200).json({ count });
   } catch (err) {
-    console.error("Error fetching product count:", err);
+    // console.error("Error fetching product count:", err);
     res.status(500).json({ error: "Failed to fetch product count" });
   }
 };
+
+
+
+// Get Total Sales for All Products
+exports.getTotalSales = async (req, res) => {
+
+  // console.  // console.log("Calculating total sales...");
+
+  try {
+    const products = await Product.find({});
+
+    let totalSales = 0;
+
+    products.forEach((product) => {
+      const price = parseFloat(product.price.toString());
+      const quantity = product.quantity || 0;
+
+      totalSales += price * quantity;
+    });
+
+    res.status(200).json({
+      success: true,
+      totalSales: totalSales.toFixed(2), // return as string with 2 decimal points
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      msg: error.message || "Failed to calculate total sales",
+      
+    });
+    // console.error("Error calculating total sales:", error);
+
+  }
+};
+
