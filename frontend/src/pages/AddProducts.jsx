@@ -93,7 +93,7 @@ const AddProducts = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-          console.error("No token found. Please login first.");
+        console.error("No token found. Please login first.");
 
         throw new Error("Authentication required");
       }
