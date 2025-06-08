@@ -1,6 +1,5 @@
-import React from 'react';
 import DashboardLayout from './DashboardLayout';
-import { LayoutDashboard, Package, FileText, Settings, LogOut } from 'lucide-react';
+import { Package,} from 'lucide-react';
 import ViewProducts from '../pages/ViewProduct';
 
 const userNavItems = [

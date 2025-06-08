@@ -1,6 +1,5 @@
-import React from 'react';
 import DashboardLayout from './DashboardLayout';
-import { LayoutDashboard, Package, ShoppingCart, FileText, PlusCircle, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, PlusCircle} from 'lucide-react';
 import AddProducts from '../pages/AddProducts';
 import ViewProducts from '../pages/ViewProduct';
 import Dashboard from '../pages/Dashboard';
